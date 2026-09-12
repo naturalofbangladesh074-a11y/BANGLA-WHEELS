@@ -1,0 +1,1048 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Bangla Wheels Simulation</title>
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+:root{
+    --bg:#031323;
+    --blue:#18bfff;
+    --blue2:#008cff;
+    --white:#f4f8ff;
+    --muted:#7892a8;
+}
+
+html{
+    scroll-behavior:smooth;
+}
+
+body{
+    min-height:100vh;
+    overflow-x:hidden;
+    font-family:Arial,Helvetica,sans-serif;
+    color:var(--white);
+
+    background:
+        radial-gradient(
+            circle at 15% 45%,
+            rgba(0,130,255,.18),
+            transparent 35%
+        ),
+        radial-gradient(
+            circle at 85% 20%,
+            rgba(0,90,170,.16),
+            transparent 35%
+        ),
+        linear-gradient(
+            135deg,
+            #020d1b,
+            #041b31 50%,
+            #020c18
+        );
+}
+
+/* BACKGROUND GRID */
+
+.grid{
+    position:fixed;
+    inset:0;
+    pointer-events:none;
+    opacity:.35;
+
+    background-image:
+        linear-gradient(
+            rgba(53,160,220,.035) 1px,
+            transparent 1px
+        ),
+        linear-gradient(
+            90deg,
+            rgba(53,160,220,.035) 1px,
+            transparent 1px
+        );
+
+    background-size:55px 55px;
+
+    mask-image:
+        linear-gradient(
+            to bottom,
+            black,
+            transparent 90%
+        );
+}
+
+/* GLOW */
+
+.glow{
+    position:fixed;
+    width:300px;
+    height:300px;
+    border-radius:50%;
+    filter:blur(100px);
+    opacity:.13;
+    pointer-events:none;
+}
+
+.glow.one{
+    background:#009dff;
+    left:-130px;
+    top:15%;
+}
+
+.glow.two{
+    background:#0055ff;
+    right:-130px;
+    bottom:-80px;
+}
+
+/* PARTICLES */
+
+.particles{
+    position:fixed;
+    inset:0;
+    pointer-events:none;
+    overflow:hidden;
+}
+
+.particle{
+    position:absolute;
+    width:3px;
+    height:3px;
+    border-radius:50%;
+    background:#51cfff;
+    opacity:.5;
+    animation:float 6s infinite ease-in-out;
+}
+
+@keyframes float{
+    0%,100%{
+        transform:translateY(0);
+        opacity:.2;
+    }
+    50%{
+        transform:translateY(-25px);
+        opacity:.8;
+    }
+}
+
+/* HERO */
+
+.hero{
+    position:relative;
+    min-height:100vh;
+    max-width:1450px;
+    margin:auto;
+
+    padding:
+        65px 7%
+        50px;
+
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+
+    gap:80px;
+}
+
+/* LEFT */
+
+.hero-content{
+    max-width:700px;
+    z-index:2;
+}
+
+.top-line{
+    display:flex;
+    align-items:center;
+    gap:12px;
+
+    margin-bottom:30px;
+
+    color:#6792ad;
+
+    font-size:11px;
+    font-weight:bold;
+    letter-spacing:4px;
+}
+
+.top-line span{
+    width:38px;
+    height:2px;
+
+    background:#19bfff;
+
+    box-shadow:
+        0 0 12px #19bfff;
+}
+
+/* TITLE */
+
+h1{
+    font-size:
+        clamp(58px,7vw,108px);
+
+    line-height:.91;
+
+    letter-spacing:-6px;
+
+    font-weight:800;
+
+    margin-bottom:38px;
+}
+
+h1 .blue{
+    color:#35c3ff;
+
+    text-shadow:
+        0 0 25px
+        rgba(25,190,255,.2);
+}
+
+/* DESCRIPTION */
+
+.description{
+    max-width:600px;
+
+    color:#7691a7;
+
+    font-size:16px;
+
+    line-height:1.8;
+
+    margin-bottom:38px;
+}
+
+/* BUTTONS */
+
+.buttons{
+    display:flex;
+    flex-wrap:wrap;
+    gap:14px;
+}
+
+.btn{
+    min-width:195px;
+    height:60px;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:18px;
+
+    border-radius:6px;
+
+    font-size:11px;
+    font-weight:bold;
+    letter-spacing:2px;
+
+    cursor:pointer;
+
+    text-decoration:none;
+
+    transition:
+        transform .3s,
+        box-shadow .3s,
+        border-color .3s;
+}
+
+.btn b{
+    font-size:19px;
+}
+
+/* DISCORD */
+
+.primary{
+    color:white;
+
+    background:
+        linear-gradient(
+            110deg,
+            #078fff,
+            #2cc7ee
+        );
+
+    box-shadow:
+        0 12px 35px
+        rgba(0,155,255,.25);
+}
+
+.primary:hover{
+    transform:translateY(-5px);
+
+    box-shadow:
+        0 18px 45px
+        rgba(0,170,255,.4);
+}
+
+/* LEARN */
+
+.secondary{
+    color:#8ba8bd;
+
+    background:
+        rgba(7,30,50,.55);
+
+    border:1px solid
+        rgba(76,150,195,.3);
+}
+
+.secondary:hover{
+    color:white;
+
+    border-color:#269fd5;
+
+    transform:translateY(-5px);
+}
+
+/* STATUS */
+
+.status{
+    display:flex;
+    align-items:center;
+    gap:10px;
+
+    margin-top:34px;
+
+    color:#607d94;
+
+    font-size:10px;
+
+    letter-spacing:2px;
+}
+
+.status i{
+    color:#304b61;
+    font-style:normal;
+}
+
+.online{
+    width:9px;
+    height:9px;
+
+    border-radius:50%;
+
+    background:#36e7a0;
+
+    box-shadow:
+        0 0 12px #36e7a0;
+
+    animation:pulse 1.8s infinite;
+}
+
+@keyframes pulse{
+    50%{
+        transform:scale(.65);
+        opacity:.4;
+    }
+}
+
+/* RIGHT CARD */
+
+.feature-card{
+    position:relative;
+
+    width:475px;
+    min-height:425px;
+
+    flex-shrink:0;
+
+    padding:30px;
+
+    border-radius:18px;
+
+    overflow:hidden;
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(10,43,70,.68),
+            rgba(2,18,34,.78)
+        );
+
+    border:1px solid
+        rgba(67,145,190,.25);
+
+    box-shadow:
+        inset 0 0 70px
+        rgba(0,120,200,.05),
+
+        0 25px 80px
+        rgba(0,0,0,.3);
+
+    transition:.5s;
+}
+
+.feature-card:hover{
+    transform:
+        translateY(-8px);
+
+    border-color:
+        rgba(57,180,235,.45);
+}
+
+/* CARD CIRCLES */
+
+.feature-card::before{
+    content:"";
+
+    position:absolute;
+
+    width:220px;
+    height:220px;
+
+    right:-80px;
+    top:-90px;
+
+    border-radius:50%;
+
+    border:1px solid
+        rgba(82,175,225,.13);
+
+    box-shadow:
+        0 0 0 35px
+        rgba(82,175,225,.025),
+
+        0 0 0 70px
+        rgba(82,175,225,.015);
+}
+
+.feature-card::after{
+    content:"";
+
+    position:absolute;
+
+    width:2px;
+    height:100%;
+
+    top:0;
+    right:90px;
+
+    background:
+        linear-gradient(
+            transparent,
+            rgba(54,180,235,.08),
+            transparent
+        );
+
+    transform:rotate(15deg);
+}
+
+/* CARD TOP */
+
+.card-top{
+    position:relative;
+    z-index:2;
+
+    display:flex;
+    justify-content:space-between;
+
+    color:#5e8aa5;
+
+    font-size:9px;
+
+    letter-spacing:3px;
+}
+
+/* CARD NUMBER */
+
+.card-number{
+    position:relative;
+    z-index:2;
+
+    margin-top:78px;
+
+    color:#62a7ca;
+
+    font-size:11px;
+
+    letter-spacing:3px;
+}
+
+/* CARD TITLE */
+
+.feature-card h2{
+    position:relative;
+    z-index:2;
+
+    margin-top:22px;
+
+    font-size:28px;
+
+    line-height:1.1;
+}
+
+.feature-card h2 span{
+    color:#2fc4fb;
+}
+
+/* CARD TEXT */
+
+.feature-card p{
+    position:relative;
+    z-index:2;
+
+    max-width:355px;
+
+    margin-top:15px;
+
+    color:#607d94;
+
+    font-size:13px;
+
+    line-height:1.7;
+}
+
+/* CARD LINE */
+
+.card-line{
+    height:1px;
+
+    margin-top:44px;
+
+    background:
+        linear-gradient(
+            90deg,
+            rgba(47,157,213,.4),
+            rgba(47,157,213,.02)
+        );
+}
+
+/* CARD BOTTOM */
+
+.card-bottom{
+    display:flex;
+    justify-content:space-between;
+
+    margin-top:47px;
+
+    color:#526e83;
+
+    font-size:8px;
+
+    letter-spacing:2px;
+}
+
+.card-bottom strong{
+    color:#9ab8ca;
+}
+
+/* MODAL */
+
+.modal{
+    position:fixed;
+    inset:0;
+
+    z-index:100;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    padding:20px;
+
+    background:
+        rgba(0,7,16,.78);
+
+    backdrop-filter:blur(10px);
+
+    opacity:0;
+    visibility:hidden;
+
+    transition:.3s;
+}
+
+.modal.active{
+    opacity:1;
+    visibility:visible;
+}
+
+.modal-box{
+    position:relative;
+
+    width:500px;
+
+    padding:45px;
+
+    border-radius:17px;
+
+    background:
+        linear-gradient(
+            145deg,
+            #092941,
+            #031525
+        );
+
+    border:1px solid
+        rgba(57,174,232,.3);
+
+    box-shadow:
+        0 30px 100px
+        rgba(0,0,0,.6);
+
+    transform:translateY(20px);
+
+    transition:.3s;
+}
+
+.modal.active .modal-box{
+    transform:translateY(0);
+}
+
+/* CLOSE */
+
+.close{
+    position:absolute;
+
+    right:20px;
+    top:15px;
+
+    border:0;
+    background:none;
+
+    color:#7591a5;
+
+    font-size:30px;
+
+    cursor:pointer;
+}
+
+.close:hover{
+    color:white;
+}
+
+/* MODAL CONTENT */
+
+.modal-small{
+    color:#35c2fa;
+
+    font-size:9px;
+
+    letter-spacing:3px;
+}
+
+.modal-box h2{
+    margin-top:18px;
+
+    font-size:38px;
+
+    line-height:1.1;
+}
+
+.modal-box h2 span{
+    color:#30c3fa;
+}
+
+.modal-box p{
+    margin:
+        20px 0 28px;
+
+    color:#7691a5;
+
+    font-size:14px;
+
+    line-height:1.7;
+}
+
+/* MODAL DISCORD */
+
+.modal-discord{
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+
+    padding:16px 25px;
+
+    color:white;
+
+    background:#5865f2;
+
+    border-radius:6px;
+
+    text-decoration:none;
+
+    font-size:10px;
+    font-weight:bold;
+
+    letter-spacing:2px;
+
+    transition:.3s;
+}
+
+.modal-discord:hover{
+    transform:translateY(-4px);
+
+    box-shadow:
+        0 12px 35px
+        rgba(88,101,242,.4);
+}
+
+/* MOBILE */
+
+@media(max-width:950px){
+
+    .hero{
+        min-height:auto;
+
+        padding:
+            55px 25px
+            70px;
+
+        flex-direction:column;
+
+        align-items:flex-start;
+
+        gap:65px;
+    }
+
+    .feature-card{
+        width:100%;
+        max-width:550px;
+    }
+
+    h1{
+        font-size:
+            clamp(55px,13vw,90px);
+
+        letter-spacing:-4px;
+    }
+}
+
+@media(max-width:550px){
+
+    .hero{
+        padding:
+            42px 20px
+            55px;
+    }
+
+    .top-line{
+        font-size:9px;
+        letter-spacing:2.5px;
+    }
+
+    h1{
+        font-size:55px;
+        letter-spacing:-3px;
+    }
+
+    .description{
+        font-size:14px;
+        line-height:1.7;
+    }
+
+    .buttons{
+        width:100%;
+    }
+
+    .btn{
+        width:100%;
+    }
+
+    .feature-card{
+        min-height:390px;
+        padding:24px;
+    }
+
+    .card-number{
+        margin-top:65px;
+    }
+
+    .modal-box{
+        padding:32px 24px;
+    }
+
+    .modal-box h2{
+        font-size:31px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<!-- BACKGROUND -->
+<div class="grid"></div>
+
+<div class="glow one"></div>
+<div class="glow two"></div>
+
+<!-- PARTICLES -->
+<div class="particles" id="particles"></div>
+
+
+<!-- MAIN -->
+<main class="hero">
+
+    <!-- LEFT -->
+    <section class="hero-content">
+
+        <div class="top-line">
+            <span></span>
+            WELCOME TO THE NIGHT & DAY SHIFT
+        </div>
+
+        <h1>
+            Bangla<br>
+            Wheels<br>
+            <span class="blue">
+                Simulation
+            </span>
+        </h1>
+
+        <p class="description">
+            The home lane for Bangladesh driving-sim fans.
+            Find your crew, tune your route, and roll into
+            the next ETS2 convoy together.
+        </p>
+
+        <div class="buttons">
+
+            <!-- DISCORD LINK -->
+            <a
+                href="https://discord.gg/q43A2BkWVf"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="btn primary"
+            >
+                JOIN THE SERVER
+                <b>↗</b>
+            </a>
+
+            <button
+                class="btn secondary"
+                id="learnBtn"
+            >
+                LEARN MORE
+                <b>›</b>
+            </button>
+
+        </div>
+
+        <div class="status">
+            <span class="online"></span>
+
+            COMMUNITY ONLINE
+
+            <i>/</i>
+
+            JOIN RO PLAYING ETS2
+        </div>
+
+    </section>
+
+
+    <!-- RIGHT CARD -->
+    <section class="feature-card">
+
+        <div class="card-top">
+
+            <span>
+                ◇ BWS FEATURE
+            </span>
+
+            <span>
+               SMOOTH PERFORMANCE
+            </span>
+
+        </div>
+
+        <div class="card-number">
+            01
+        </div>
+
+        <h2>
+            Unique<br>
+
+            <span>
+                Premium Map ON BD
+            </span>
+        </h2>
+
+        <p>
+            A signature route experience for
+            Bangla Wheels drivers.
+            Less noise, more road, and a
+            convoy worth joining.
+        </p>
+
+        <div class="card-line"></div>
+
+        <div class="card-bottom">
+
+            <span>
+                CURATED ROUTE SYSTEM
+            </span>
+
+            <strong>
+                ETS2 / BWS
+            </strong>
+
+        </div>
+
+    </section>
+
+</main>
+
+
+<!-- LEARN MORE MODAL -->
+
+<div
+    class="modal"
+    id="modal"
+>
+
+    <div class="modal-box">
+
+        <button
+            class="close"
+            id="closeBtn"
+        >
+            ×
+        </button>
+
+        <div class="modal-small">
+            BWS / ETS2 COMMUNITY
+        </div>
+
+        <h2>
+            Welcome to<br>
+
+            <span>
+                Bangla Wheels Simulation 
+            </span>
+        </h2>
+
+        <p>
+            Join Bangla Wheels Simulation for
+            ETS2 Bangladeshi Maps ,ETS2 FULL GOD LEVEL EDITION.
+            
+        </p>
+
+        <!-- DISCORD LINK -->
+        <a
+            href="https://discord.gg/q43A2BkWVf"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="modal-discord"
+        >
+            JOIN DISCORD ↗
+        </a>
+
+    </div>
+
+</div>
+
+
+<script>
+
+/* =========================
+   PARTICLES
+========================= */
+
+const particleContainer =
+    document.getElementById("particles");
+
+for(let i = 0; i < 35; i++){
+
+    const particle =
+        document.createElement("span");
+
+    particle.className = "particle";
+
+    particle.style.left =
+        Math.random() * 100 + "%";
+
+    particle.style.top =
+        Math.random() * 100 + "%";
+
+    particle.style.animationDelay =
+        Math.random() * 5 + "s";
+
+    particle.style.animationDuration =
+        4 + Math.random() * 5 + "s";
+
+    particleContainer.appendChild(particle);
+}
+
+
+/* =========================
+   MODAL
+========================= */
+
+const learnBtn =
+    document.getElementById("learnBtn");
+
+const modal =
+    document.getElementById("modal");
+
+const closeBtn =
+    document.getElementById("closeBtn");
+
+
+/* OPEN */
+
+learnBtn.addEventListener(
+    "click",
+    function(){
+
+        modal.classList.add("active");
+
+    }
+);
+
+
+/* CLOSE */
+
+closeBtn.addEventListener(
+    "click",
+    function(){
+
+        modal.classList.remove("active");
+
+    }
+);
+
+
+/* CLICK OUTSIDE */
+
+modal.addEventListener(
+    "click",
+    function(event){
+
+        if(event.target === modal){
+
+            modal.classList.remove("active");
+
+        }
+
+    }
+);
+
+
+/* ESC */
+
+document.addEventListener(
+    "keydown",
+    function(event){
+
+        if(event.key === "Escape"){
+
+            modal.classList.remove("active");
+
+        }
+
+    }
+);
+
+</script>
+
+</body>
+</html>
